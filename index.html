@@ -22,11 +22,41 @@
     <div>
         <h1>This is Your Company Website</h1>
         <p>
-            By Adding the below scripts,
-            a circular button in the bottom-right corner will appear
+            By adding two script tags to your websitehtml, an AI chatbot will be enabled.
+            <br>
+            A circular button in the bottom-right corner will appear
             and it will allow your customers to interact with AI!
         </p>
-        <div style="color: #ffd800"></div>
+        <pre>
+            
+    <script>
+        var xfbotConfig = {
+            // --- Core Settings ---
+            apiEndpoint: 'https://xf.com.mt/xfai/bot/', 
+            userId: 'botdemo', // IMPORTANT: Update with your real USER ID
+
+            // --- Header Customization ---
+            headerTitle: 'Support Bot',
+            headerBgColor: '#ffd042',    // Controls the chat window header background
+            headerTextColor: '#ffffff',
+
+            // --- Toggle Button Customization ---
+            toggleButtonBgColor: '#ffd800', // Controls the circular button's background
+            toggleButtonOpacity: 0.9,       // Controls the button's opacity (0.0 to 1.0)
+
+            // --- Chat Bubble Customization ---
+            chatBubbleUserColor: '#333333',
+            chatBubbleBotColor: '#ffffff',
+            chatTextColorUser: '#ffffff',
+            chatTextColorBot: '#333333',
+
+            // --- Other Settings ---
+            inputPlaceholder: 'Type your message...',
+        };
+    </script>
+    <script src="https://psanilp.github.io/xfbot/xfbot.min.js" defer></script>
+            
+        </pre>
     </div>
 
 
