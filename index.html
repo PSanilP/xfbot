@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>xfBot Plugin</title>
+    <style>
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div>
+        <h1>This is Your Company Website</h1>
+        <p>
+            By Adding the below scripts,
+            a circular button in the bottom-right corner will appear
+            and it will allow your customers to interact with AI!
+        </p>
+        <div style="color: #ffd800"></div>
+    </div>
+
+
+
+    <script>
+        var xfbotConfig = {
+            // --- Core Settings ---
+            apiEndpoint: '/xfai/bot/', // IMPORTANT: Update with your real API endpoint
+            userId: 'botdemo',
+
+            // --- Header Customization ---
+            headerTitle: 'Support Bot',
+            headerBgColor: '#ffd042',    // Controls the chat window header background
+            headerTextColor: '#ffffff',
+
+            // --- Toggle Button Customization ---
+            toggleButtonBgColor: '#ffd800', // Controls the circular button's background
+            toggleButtonOpacity: 0.9,       // Controls the button's opacity (0.0 to 1.0)
+
+            // --- Chat Bubble Customization ---
+            chatBubbleUserColor: '#333333',
+            chatBubbleBotColor: '#ffffff',
+            chatTextColorUser: '#ffffff',
+            chatTextColorBot: '#333333',
+
+            // --- Other Settings ---
+            inputPlaceholder: 'Type your message...',
+        };
+    </script>
+    <script src="bot.js" defer></script>
+
+
+</body>
+</html>
