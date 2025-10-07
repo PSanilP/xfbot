@@ -19,44 +19,43 @@
 </head>
 <body>
 
-    <div>
+    <div style="width:90%">
         <h1>This is Your Company Website</h1>
         <p>
-            By adding two script tags to your websitehtml, an AI chatbot will be enabled.
-            <br>
-            A circular button in the bottom-right corner will appear
-            and it will allow your customers to interact with AI!
+            You can add an AI chatbot to your website by inserting two script tags to any web page.
+           
+           
         </p>
-        <pre>
-            
-    <script>
-        var xfbotConfig = {
-            // --- Core Settings ---
-            apiEndpoint: 'https://xf.com.mt/xfai/bot/', 
-            userId: 'botdemo', // IMPORTANT: Update with your real USER ID
+        <p>
+            A circular button in the bottom-right corner will appear
+            and it will allow your customers to interact with your website using AI. It will respond to information that you define!
+            At the end of the interaction, the transcript will be emailed to you.
+        </p>
+        <div style="overflow-x:auto;padding:10px;background-color:#fafafa;">
+            <pre style="color:#00478a;"><code>
+&lt;script&gt;
+    var xfbotConfig = {
+        apiEndpoint: 'https://xf.com.mt/xfai/bot/',
+        userId: 'botdemo',
 
-            // --- Header Customization ---
-            headerTitle: 'Support Bot',
-            headerBgColor: '#ffd042',    // Controls the chat window header background
-            headerTextColor: '#ffffff',
+        headerTitle: 'Support Bot',
+        headerBgColor: '#ffd042',
+        headerTextColor: '#ffffff',
 
-            // --- Toggle Button Customization ---
-            toggleButtonBgColor: '#ffd800', // Controls the circular button's background
-            toggleButtonOpacity: 0.9,       // Controls the button's opacity (0.0 to 1.0)
+        toggleButtonBgColor: '#ffd800',
+        toggleButtonOpacity: 0.9,
 
-            // --- Chat Bubble Customization ---
-            chatBubbleUserColor: '#333333',
-            chatBubbleBotColor: '#ffffff',
-            chatTextColorUser: '#ffffff',
-            chatTextColorBot: '#333333',
+        chatBubbleUserColor: '#333333',
+        chatBubbleBotColor: '#ffffff',
+        chatTextColorUser: '#ffffff',
+        chatTextColorBot: '#333333',
 
-            // --- Other Settings ---
-            inputPlaceholder: 'Type your message...',
-        };
-    </script>
-    <script src="https://psanilp.github.io/xfbot/xfbot.min.js" defer></script>
-            
-        </pre>
+        inputPlaceholder: 'Type your message...',
+    };
+&lt;/script&gt;
+&lt;script src="https://psanilp.github.io/xfbot/xfbot.min.js" defer&gt;&lt;/script&gt;
+</code></pre>
+        </div>
     </div>
 
 
@@ -64,7 +63,7 @@
     <script>
         var xfbotConfig = {
             // --- Core Settings ---
-            apiEndpoint: 'https://xf.com.mt/xfai/bot/', 
+            apiEndpoint: 'https://xf.com.mt/xfai/bot/',
             userId: 'botdemo', // IMPORTANT: Update with your real USER ID
 
             // --- Header Customization ---
