@@ -540,7 +540,7 @@ const xfBot = (function () {
 
     function init() {
         const defaultConfig = {
-            apiEndpoint: 'https://localhost:7195/xfai/bot/',
+            apiEndpoint: 'https://xf.com.mt/xfai/bot/',
             userId: 'botdemo',
             headerTitle: 'xfBot',
             headerBgColor: '#ffbf00',
