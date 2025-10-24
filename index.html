@@ -4,35 +4,112 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>xfBot Plugin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lexend:300,400,500,600,700" />
     <style>
         body {
-            font-family: 'Inter', Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            background-color: #f0f2f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: 'Lexend', sans-serif !important;
         }
     </style>
 </head>
-<body>
+<body class="bg-gray-50 font-sans text-gray-800">
 
-    <div style="width:90%">
-        <h1>This is Your Company Website</h1>
-        <p>
-            You can integrate an AI chatbot into your website by adding two script tags to any page. This will display a circular button in the bottom-right corner, allowing visitors to initiate a chat session.
-        </p>
-        <p>
-            The chatbot operates using content you define—such as your company’s terms and conditions, FAQs, service agreements, and other reference materials. This ensures responses are specific to your business context.
-        </p> <p>
-            At the end of each interaction, a transcript of the conversation is automatically emailed to you for review or follow-up.
 
-        </p>
-        <h5>Add the following Script Tags to your website</h5>
-        <div style="overflow-x:auto;padding:10px;background-color:#fafafa;">
-            <pre style="color:#00478a;"><code>
+    <!-- Hero Section -->
+    <section id="home" class="bg-gradient-to-b from-blue-100 to-gray-50 py-20 text-center">
+        <div class="container mx-auto px-4 mt-20">
+            <h2 class="text-3xl md:text-5xl font-bold text-gray-900 mb-6 animate-fade-in">
+                Instant AI Chat Support<br>Tailored to Your Business
+            </h2>
+            <div class="text-center mb-6">
+                <img class="max-h-20 mx-auto" src="assets/mizr.png" />
+            </div>
+            <div class="text-center font-bold mb-6">
+                🔍 Powered by your own content: FAQs, service agreements, policies, and more
+                <br />
+                🎯 Always relevant: Responses reflect your business context and tone
+                <br />
+                📩 Automatic transcripts: Every chat session is emailed to you for review or follow-up
+            </div>
+        </div>
+    </section>
+
+    <!-- Section1 -->
+    <section id="repliii1" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-wrap">
+                <div class="w-full md:w-1/2 p-4">
+                    <div class="space-y-4">
+                        <div class="h-[250px] mb-8">
+                            <img src="assets/repl.png" class="h-full mx-auto" />
+                        </div>
+                        <div class="text-2xl font-bold text-center xf-green mb-4">
+                            Add AI Chatbot to Your Website in Seconds
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="w-full md:w-1/2 p-8">
+
+                    <div class="mb-6"> Whether you're streamlining support or boosting engagement, this AI chatbot delivers clarity, consistency, and convenience—without the overhead.</div>
+                    <div>
+                        <ul class="list-disc list-inside text-gray-700 space-y-2 mb-6">
+                            <li><strong>Simple and intuitive</strong> — no technical expertise required</li>
+                            <li><strong>Reliable and scalable</strong> — built on industry-leading technology</li>
+                            <li><strong>Rapid deployment</strong> — go live in minutes!</li>
+                            <li><strong>Scalable architecture</strong> — grow effortlessly with your organization</li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-2">
+                        With just two script tags in your HTML,
+                        you will be able to activate and AI chatbot that answers questions in real time based on YOUR data.
+
+                    </div>
+                    <div class="text-blue-700 font-bold">
+                        A customisable chat button will be placed in the bottom-right corner—ready
+                        to engage visitors and answer questions in real time
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+
+    </section>
+    <section>
+
+        <section class="py-16 bg-gray-100">
+        <div class="container mx-auto px-4">
+
+
+            <div class="my-4">
+                <h3 class="text-3xl mt-8 font-bold">Setting Up</h3>
+                <div class="mb-4">
+                    <p class="my-2">To begin using the AI chatbot, sign up and set your initial content.</p>
+                    <p>
+                        This content acts as the foundation for how the chatbot understands intent and responds to user queries on your website.
+                        Once configured, the chatbot will tailor its answers based on the context you provide, delivering intelligent, relevant responses every time a visitor on your website
+                        interacts with it.
+                    </p>
+
+                </div>
+
+
+                <h3 class="text-3xl mt-8 font-bold">Embedding the AI Chatbot</h3>
+                <div class="mb-4">To deploy the chatbot, insert the following two <code>&lt;script&gt;</code> tags into your website’s HTML. This will render a circular chat icon in the bottom-right corner of the page.</div>
+
+
+                <h2 class="font-bold mb-2">Main Script Tag</h2>
+                <pre style="color: #00478a; background-color: #fff; padding: 1rem; overflow-x:auto"><code>
+    &lt;script src="https://psanilp.github.io/xfbot/xfbot.min.js" defer&gt;&lt;/script&gt;
+</code></pre>
+            </div>
+
+            <h2 class="font-bold mb-2">Customisation</h2>
+            <pre style="color: #00478a; background-color: #fafafa; padding: 1rem; overflow-x:auto;"><code>
     &lt;script&gt;
     var xfbotConfig = {
     apiEndpoint: 'https://xf.com.mt/xfai/bot/',
@@ -54,10 +131,14 @@
     inputPlaceholder: 'Type your message...',
     };
     &lt;/script&gt;
-    &lt;script src="https://psanilp.github.io/xfbot/xfbot.min.js" defer&gt;&lt;/script&gt;
 </code></pre>
+
+
+
+
+
         </div>
-    </div>
+    </section>    
 
 
 
@@ -65,15 +146,16 @@
         var xfbotConfig = {
             // --- Core Settings ---
             apiEndpoint: 'https://xf.com.mt/xfai/bot/',
+            //apiEndpoint: '/xfai/bot/',
             userId: 'botdemo', // IMPORTANT: Update with your real USER ID
 
             // --- Header Customization ---
             headerTitle: 'Support Bot',
-            headerBgColor: '#ffd042',    // Controls the chat window header background
+            headerBgColor: '#4d91ff',    // Controls the chat window header background
             headerTextColor: '#ffffff',
 
             // --- Toggle Button Customization ---
-            toggleButtonBgColor: '#ffd800', // Controls the circular button's background
+            toggleButtonBgColor: '#4d91ff', // Controls the circular button's background
             toggleButtonOpacity: 0.9,       // Controls the button's opacity (0.0 to 1.0)
 
             // --- Chat Bubble Customization ---
