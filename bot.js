@@ -1,274 +1,180 @@
 const xfBot = (function () {
     'use strict';
-
-    // CSS to be injected into the document
     const CHATBOT_CSS = `
-       #chatbot-toggle-button {
-           position: fixed;
-           bottom: 2.5rem;
-           right: 2.5rem;
-           width: 6rem;
-           height: 6rem;
-           border-radius: 50%;
-           background-color: var(--toggle-bg, #fafafa);
-           box-shadow: 0 0.4rem 1.5rem rgba(0, 0, 0, 0.3);
-           border: none;
-           cursor: pointer;
-           display: flex;
-           justify-content: center;
-           align-items: center;
-           transition: transform 0.3s ease, opacity 0.3s ease;
-           z-index: 1000;
-       }
+        #xfbot-toggle-button {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--toggle-bg, #fafafa);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            z-index: 1000;
+        }
+        
+        #xfbot-toggle-button.is-hidden {
+            transform: scale(0.8);
+            opacity: 0;
+            pointer-events: none;
+        }
 
-           #chatbot-toggle-button.is-hidden {
-               transform: scale(0.8);
-               opacity: 0;
-               pointer-events: none;
-           }
+        #xfbot-toggle-button:hover {
+            transform: scale(1.05);
+        }
 
-           #chatbot-toggle-button:hover {
-               transform: scale(1.05);
-           }
+        #xfbot-toggle-button svg {
+            width: 30px;
+            height: 30px;
+            fill: var(--header-text-color, #ffffff);
+        }
 
-           #chatbot-toggle-button svg {
-               width: 3rem;
-               height: 3rem;
-               fill: var(--header-text-color, #ffffff);
-           }
+        /* --- Main Chat Widget --- */
+        .xfbot-widget {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            display: none; /* Initially hidden */
+            flex-direction: column;
+            width: 320px;
+            height: 480px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            background-color: #f7f7f7;
+            transition: all 0.3s ease-in-out;
+            z-index: 999;
+        }
 
-       .chatbot-widget {
-           position: fixed;
-           bottom: 2.5rem;
-           right: 2.5rem;
-           display: none;
-           flex-direction: column;
-           width: 32rem;
-           height: 48rem;
-           border-radius: 1rem;
-           box-shadow: 0 0.4rem 1.5rem rgba(0, 0, 0, 0.2);
-           overflow: hidden;
-           background-color: #f7f7f7;
-           transition: all 0.3s ease-in-out;
-           z-index: 999;
-       }
+        .xfbot-widget.is-open {
+            display: flex;
+            transform: translateY(0);
+            opacity: 1;
+        }
 
-           .chatbot-widget.is-open {
-               display: flex;
-               transform: translateY(0);
-               opacity: 1;
-           }
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .xfbot-widget {
+                width: 90vw;
+                height: 80vh;
+                bottom: 80px;
+                right: 5vw;
+                left: 5vw;
+            }
 
-       @media (max-width: 48rem) {
-           .chatbot-widget {
-               width: 90vw;
-               height: 80vh;
-               bottom: 8rem;
-               right: 5vw;
-               left: 5vw;
-           }
+            #xfbot-toggle-button {
+                bottom: 20px;
+                right: 20px;
+            }
+        }
 
-           #chatbot-toggle-button {
-               bottom: 2rem;
-               right: 2rem;
-           }
-       }
 
-       .chatbot-header {
-           display: flex;
-           align-items: center;
-           background-color: var(--header-bg, #ff6600);
-           color: var(--header-text-color, #fff);
-           padding: 1rem 1.5rem;
-           border-top-left-radius: 1rem;
-           border-top-right-radius: 1rem;
-           user-select: none;
-       }
+        /* Header */
+        .xfbot-header {
+            display: flex;
+            align-items: center;
+            background-color: var(--header-bg, #ff6600);
+            color: var(--header-text-color, #fff);
+            padding: 10px 15px;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            user-select: none;
+        }
 
-           .chatbot-header .header-controls {
-               margin-left: auto;
-               display: flex;
-               gap: 1.5rem;
-           }
+        .xfbot-header .header-controls {
+            margin-left: auto;
+            display: flex;
+            gap: 15px;
+        }
 
-       .chatbot-header-logo {
-           padding: 0.5rem;
-           background-color: rgba(255, 255, 255, 0.2);
-           border-radius: 50%;
-           width: 3.4rem;
-           height: 3.4rem;
-           display: flex;
-           justify-content: center;
-           align-items: center;
-       }
+        .xfbot-header-logo {
+            padding: 5px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 34px;
+            height: 34px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-           .chatbot-header-logo svg {
-               width: 2.4rem;
-               height: 2.4rem;
-               display: block;
-           }
+        .xfbot-header-logo svg {
+            width: 24px;
+            height: 24px;
+            display: block;
+        }
 
-       .chatbot-header-title {
-           font-weight: 600;
-           flex-grow: 1;
-           margin-left: 1rem;
-       }
+        .xfbot-header-title {
+            font-weight: 600;
+            flex-grow: 1;
+            margin-left: 10px;
+        }
 
-       .chatbot-header-btn {
-           background: none;
-           border: none;
-           color: var(--header-text-color, #fff);
-           cursor: pointer;
-           opacity: 0.8;
-           transition: opacity 0.2s;
-           padding: 0;
-           display: flex;
-           align-items: center;
-           justify-content: center;
-       }
+        .xfbot-header-btn {
+            background: none;
+            border: none;
+            color: var(--header-text-color, #fff);
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-           .chatbot-header-btn:hover {
-               opacity: 1;
-           }
+        .xfbot-header-btn:hover {
+            opacity: 1;
+        }
 
-       .chatbot-body {
-           flex-grow: 1;
-           padding: 1.5rem;
-           overflow-y: auto;
-           background-color: #e5e5e5;
-           display: flex;
-           flex-direction: column;
-           gap: 1rem;
-           scrollbar-width: thin;
-           scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
-       }
+        /* Chat Body */
+        .xfbot-body {
+            flex-grow: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background-color: #e5e5e5;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+        }
 
-           .chatbot-body::-webkit-scrollbar {
-               width: 0.8rem;
-           }
+        .xfbot-body::-webkit-scrollbar { width: 8px; }
+        .xfbot-body::-webkit-scrollbar-thumb { background-color: rgba(0, 0, 0, 0.2); border-radius: 4px; }
 
-           .chatbot-body::-webkit-scrollbar-thumb {
-               background-color: rgba(0, 0, 0, 0.2);
-               border-radius: 0.4rem;
-           }
+        .message { display: flex; max-width: 85%; }
+        .message-bubble { padding: 10px 15px; border-radius: 20px; line-height: 1.4; word-wrap: break-word; font-size: 14px; }
+        .message-bubble ul { padding-left: 20px; margin: 5px 0 0; }
+        .user-message { justify-content: flex-end; align-self: flex-end; margin-left: auto; }
+        .user-message .message-bubble { background-color: var(--user-bubble-bg, #333333); color: var(--user-text-color, #ffffff); border-bottom-right-radius: 5px; }
+        .bot-message { justify-content: flex-start; align-self: flex-start; }
+        .bot-message .message-bubble { background-color: var(--bot-bubble-bg, #ffffff); color: var(--bot-text-color, #333333); border-bottom-left-radius: 5px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); }
+        .bot-message.is-typing .message-bubble { display: flex; align-items: center; padding: 10px 15px; gap: 5px; }
 
-       .message {
-           display: flex;
-           max-width: 85%;
-       }
+        /* SVG Loader Animation */
+        .bot-loader svg circle { animation: pulse 1.4s infinite ease-in-out; transform-origin: center center; fill: var(--bot-text-color, #333333); }
+        .bot-loader svg circle:nth-child(2) { animation-delay: 0.2s; }
+        .bot-loader svg circle:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes pulse { 0%, 80%, 100% { transform: scale(0); opacity: 0; } 40% { transform: scale(1); opacity: 1; } }
 
-       .message-bubble {
-           padding: 1rem 1.5rem;
-           border-radius: 2rem;
-           line-height: 1.4;
-           font-size: 1.4rem;
-           overflow-wrap: break-word;
-       }
-
-           .message-bubble ul {
-               padding-left: 2rem;
-               margin: 0.5rem 0 0;
-           }
-
-       .user-message {
-           justify-content: flex-end;
-           align-self: flex-end;
-           margin-left: auto;
-       }
-
-           .user-message .message-bubble {
-               background-color: var(--user-bubble-bg, #333333);
-               color: var(--user-text-color, #ffffff);
-               border-bottom-right-radius: 0.5rem;
-           }
-
-       .bot-message {
-           justify-content: flex-start;
-           align-self: flex-start;
-       }
-
-           .bot-message .message-bubble {
-               background-color: var(--bot-bubble-bg, #ffffff);
-               color: var(--bot-text-color, #333333);
-               border-bottom-left-radius: 0.5rem;
-               box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.1);
-           }
-
-           .bot-message.is-typing .message-bubble {
-               display: flex;
-               align-items: center;
-               padding: 1rem 1.5rem;
-               gap: 0.5rem;
-           }
-
-       .bot-loader svg circle {
-           animation: pulse 1.4s infinite ease-in-out;
-           transform-origin: center center;
-           fill: var(--bot-text-color, #333333);
-       }
-
-           .bot-loader svg circle:nth-child(2) {
-               animation-delay: 0.2s;
-           }
-
-           .bot-loader svg circle:nth-child(3) {
-               animation-delay: 0.4s;
-           }
-
-       @keyframes pulse {
-           0%, 80%, 100% {
-               transform: scale(0);
-               opacity: 0;
-           }
-
-           40% {
-               transform: scale(1);
-               opacity: 1;
-           }
-       }
-
-       .chatbot-footer {
-           display: flex;
-           padding: 0.8rem;
-           align-items: center;
-           background-color: #fff;
-           border-top: 0.1rem solid #ddd;
-       }
-
-       .chatbot-input {
-           flex-grow: 1;
-           padding: 1rem 1.5rem;
-           border: 0.1rem solid #ddd;
-           border-radius: 2rem;
-           font-size: 1.4rem;
-           outline: none;
-           margin-right: 0.6rem;
-       }
-
-       .chatbot-send-btn {
-           background: none;
-           border: none;
-           cursor: pointer;
-           padding: 0;
-           width: 3rem;
-           height: 3rem;
-           display: flex;
-           justify-content: center;
-           align-items: center;
-           color: var(--header-bg, #ff6600);
-       }
-
-           .chatbot-send-btn svg {
-               width: 100%;
-               height: 100%;
-           }
+        /* Footer */
+        .xfbot-footer { display: flex; padding: 8px;align-items: center; background-color: #fff; border-top: 1px solid #ddd; }
+        .xfbot-input { flex-grow: 1; padding: 10px 15px; border: 1px solid #ddd; border-radius: 20px; font-size: 14px; outline: none; margin-right: 6px; }
+        .xfbot-send-btn { background: none; border: none; cursor: pointer; padding: 0; width: 30px; height: 30px; display: flex; justify-content: center; align-items: center; color: var(--header-bg, #ff6600); }
+        .xfbot-send-btn svg { width: 100%; height: 100%; }
     `;
 
-    // Function to inject CSS into the document head
     function addChatbotStyles() {
-        if (!document.getElementById('chatbot-styles')) {
+        if (!document.getElementById('xfbot-styles')) {
             const style = document.createElement('style');
-            style.id = 'chatbot-styles';
+            style.id = 'xfbot-styles';
             style.textContent = CHATBOT_CSS;
             document.head.appendChild(style);
         }
@@ -277,7 +183,7 @@ const xfBot = (function () {
     let config = {};
     let conversationHistory = [];
     let sessionId = null;
-    let hasInteracted = false; // <-- MODIFICATION 1: Flag for session interaction
+    let hasInteracted = false;
 
     function simpleRenderer(text) {
         let safeText = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
@@ -325,6 +231,10 @@ const xfBot = (function () {
         </svg>
     `;
 
+    const ICON_SEND = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+    `;
+
     function hexToRgba(hex, alpha = 1) {
         let c;
         if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
@@ -338,19 +248,17 @@ const xfBot = (function () {
 
     function generateUUID() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8); return v.toString(16);
         });
     }
 
     function saveState() {
-        localStorage.setItem('chatbotSessionId', sessionId);
-        localStorage.setItem('chatbotHistory', JSON.stringify(conversationHistory));
+        localStorage.setItem('xfbotSessionId', sessionId); localStorage.setItem('xfbotHistory', JSON.stringify(conversationHistory));
     }
 
     function loadState() {
-        const savedSessionId = localStorage.getItem('chatbotSessionId');
-        const savedHistory = localStorage.getItem('chatbotHistory');
+        const savedSessionId = localStorage.getItem('xfbotSessionId');
+        const savedHistory = localStorage.getItem('xfbotHistory');
         if (savedSessionId && savedHistory) {
             try {
                 return { sessionId: savedSessionId, history: JSON.parse(savedHistory) };
@@ -364,11 +272,9 @@ const xfBot = (function () {
 
     async function clearChat() {
         await sendTranscriptOnClick();
-        localStorage.removeItem('chatbotHistory');
-        conversationHistory = [];
-        const chatBody = document.querySelector('.chatbot-body');
-        chatBody.innerHTML = '';
-        appendMessage(config.initialMessage, 'bot');
+        localStorage.removeItem('xfbotHistory'); conversationHistory = [];
+        const chatBody = document.querySelector('.xfbot-body');
+        chatBody.innerHTML = ''; appendMessage(config.initialMessage, 'bot');
     }
 
     async function sendMessageToAPI(message) {
@@ -392,9 +298,7 @@ const xfBot = (function () {
     }
 
     async function sendTranscriptOnClick() {
-        if (conversationHistory.length === 0) {
-            return;
-        }
+        if (conversationHistory.length === 0) return;
         const transcriptHistory = [...conversationHistory, { role: 'user', content: '$$send_transcript$$' }];
         const payload = { uid: config.userId, qry: '$$send_transcript$$', messages: transcriptHistory, session: sessionId };
         try {
@@ -411,10 +315,7 @@ const xfBot = (function () {
     }
 
     function sendTranscriptOnUnload() {
-        // Only send if the history isn't empty AND the user has interacted in this session.
-        if (conversationHistory.length === 0 || !hasInteracted) {
-            return;
-        }
+        if (conversationHistory.length === 0 || !hasInteracted) return;
         const transcriptHistory = [...conversationHistory, { role: 'user', content: '$$send_transcript$$' }];
         const payload = { uid: config.userId, qry: '$$send_transcript$$', messages: transcriptHistory, session: sessionId };
         const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
@@ -422,7 +323,7 @@ const xfBot = (function () {
     }
 
     function appendMessage(text, sender, doNotScroll = false) {
-        const chatBody = document.querySelector('.chatbot-body');
+        const chatBody = document.querySelector('.xfbot-body');
         if (!chatBody) return;
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('message', `${sender}-message`);
@@ -435,29 +336,29 @@ const xfBot = (function () {
     }
 
     function appendLoader() {
-        const chatBody = document.querySelector('.chatbot-body');
+        const chatBody = document.querySelector('.xfbot-body');
         if (!chatBody) return;
         const loaderDiv = document.createElement('div');
         loaderDiv.classList.add('message', 'bot-message', 'is-typing');
         const bubbleDiv = document.createElement('div');
         bubbleDiv.classList.add('message-bubble');
-        bubbleDiv.innerHTML = BOT_LOADER_SVG;
+        bubbleDiv.innerHTML = config.svgLoader;
         loaderDiv.appendChild(bubbleDiv);
         chatBody.appendChild(loaderDiv);
         chatBody.scrollTop = chatBody.scrollHeight;
     }
 
     function renderToggleButton() {
-        const toggleContainer = document.getElementById('chatbot-toggle-container');
+        const toggleContainer = document.getElementById('xfbot-toggle-container');
         if (!toggleContainer) { console.error('Toggle button container not found!'); return; }
         const toggleButton = document.createElement('button');
-        toggleButton.id = 'chatbot-toggle-button';
-        toggleButton.innerHTML = BOT_LOGO_SVG;
+        toggleButton.id = 'xfbot-toggle-button';
+        toggleButton.innerHTML = config.svgLogo;
         const bgColor = hexToRgba(config.toggleButtonBgColor, config.toggleButtonOpacity);
         toggleButton.style.setProperty('--toggle-bg', bgColor);
         toggleButton.style.setProperty('--header-text-color', config.headerTextColor);
         toggleContainer.appendChild(toggleButton);
-        const widget = document.querySelector('.chatbot-widget');
+        const widget = document.querySelector('.xfbot-widget');
         toggleButton.addEventListener('click', () => {
             if (widget) {
                 widget.classList.add('is-open');
@@ -467,38 +368,39 @@ const xfBot = (function () {
     }
 
     function renderChatbotUI() {
-        const container = document.getElementById('chatbot-container');
+        const container = document.getElementById('xfbot-container');
         if (!container) { console.error('Chatbot container element not found!'); return; }
+
         container.innerHTML = `
-            <div class="chatbot-widget" style="--header-bg: ${config.headerBgColor}; --header-text-color: ${config.headerTextColor}; --user-bubble-bg: ${config.chatBubbleUserColor}; --bot-bubble-bg: ${config.chatBubbleBotColor}; --user-text-color: ${config.chatTextColorUser}; --bot-text-color: ${config.chatTextColorBot};">
-                <div class="chatbot-header">
-                    <div class="chatbot-header-logo">${BOT_LOGO_SVG}</div>
-                    <div class="chatbot-header-title">${config.headerTitle}</div>
+            <div class="xfbot-widget" style="--header-bg: ${config.headerBgColor}; --header-text-color: ${config.headerTextColor}; --user-bubble-bg: ${config.chatBubbleUserColor}; --bot-bubble-bg: ${config.chatBubbleBotColor}; --user-text-color: ${config.chatTextColorUser}; --bot-text-color: ${config.chatTextColorBot};">
+                <div class="xfbot-header">
+                    <div class="xfbot-header-logo">${config.svgLogo}</div>
+                    <div class="xfbot-header-title">${config.headerTitle}</div>
                     <div class="header-controls">
-                        <button id="chatbot-clear-btn" class="chatbot-header-btn" title="Clear Chat">${ICON_CLEAR}</button>
-                        <button id="chatbot-minimize-btn" class="chatbot-header-btn" title="Minimize">${ICON_MINIMIZE}</button>
+                        <button id="xfbot-clear-btn" class="xfbot-header-btn" title="Clear Chat">${config.svgClear}</button>
+                        <button id="xfbot-minimize-btn" class="xfbot-header-btn" title="Minimize">${config.svgMinimize}</button>
                     </div>
                 </div>
-                <div class="chatbot-body"></div>
-                <div class="chatbot-footer">
-                    <input type="text" class="chatbot-input" placeholder="${config.inputPlaceholder}">
-                    <button class="chatbot-send-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                <div class="xfbot-body"></div>
+                <div class="xfbot-footer">
+                    <input type="text" class="xfbot-input" placeholder="${config.inputPlaceholder}">
+                    <button class="xfbot-send-btn">
+                        ${config.svgSend}
                     </button>
                 </div>
             </div>`;
 
-        const input = container.querySelector('.chatbot-input');
-        const sendButton = container.querySelector('.chatbot-send-btn');
-        const clearButton = container.querySelector('#chatbot-clear-btn');
-        const minimizeButton = container.querySelector('#chatbot-minimize-btn');
-        const chatBody = container.querySelector('.chatbot-body');
-        const widget = container.querySelector('.chatbot-widget');
+        const input = container.querySelector('.xfbot-input');
+        const sendButton = container.querySelector('.xfbot-send-btn');
+        const clearButton = container.querySelector('#xfbot-clear-btn');
+        const minimizeButton = container.querySelector('#xfbot-minimize-btn');
+        const chatBody = container.querySelector('.xfbot-body');
+        const widget = container.querySelector('.xfbot-widget');
 
         const handleSendMessage = async () => {
             const message = input.value.trim();
             if (message) {
-                hasInteracted = true; // <-- MODIFICATION 2: Set flag on interaction
+                hasInteracted = true;
                 appendMessage(message, 'user');
                 input.value = '';
                 input.disabled = true;
@@ -530,7 +432,7 @@ const xfBot = (function () {
         clearButton.addEventListener('click', clearChat);
 
         minimizeButton.addEventListener('click', () => {
-            const toggleButton = document.getElementById('chatbot-toggle-button');
+            const toggleButton = document.getElementById('xfbot-toggle-button');
             if (widget && toggleButton) {
                 widget.classList.remove('is-open');
                 toggleButton.classList.remove('is-hidden');
@@ -552,7 +454,11 @@ const xfBot = (function () {
             chatTextColorUser: '#ffffff',
             chatTextColorBot: '#333333',
             inputPlaceholder: 'Type your message...',
-            additionalCss: null
+            svgLogo: BOT_LOGO_SVG,
+            svgLoader: BOT_LOADER_SVG,
+            svgClear: ICON_CLEAR,
+            svgMinimize: ICON_MINIMIZE,
+            svgSend: ICON_SEND
         };
 
         if (typeof xfbotConfig !== 'undefined' && typeof xfbotConfig === 'object') {
@@ -561,17 +467,24 @@ const xfBot = (function () {
             config = defaultConfig;
         }
 
-        if (!config.apiEndpoint || !config.userId) { console.error('Chatbot initialization failed: apiEndpoint and userId are required.'); return; }
+        // --- MODIFICATION: Ensure SVGs fallback if user provides an empty string ---
+        config.svgLogo = config.svgLogo || defaultConfig.svgLogo;
+        config.svgLoader = config.svgLoader || defaultConfig.svgLoader;
+        config.svgClear = config.svgClear || defaultConfig.svgClear;
+        config.svgMinimize = config.svgMinimize || defaultConfig.svgMinimize;
+        config.svgSend = config.svgSend || defaultConfig.svgSend;
+
+        if (!config.userId) { console.error('Chatbot initialization failed: userId required.'); return; }
         addChatbotStyles();
 
-        if (!document.getElementById('chatbot-container')) {
+        if (!document.getElementById('xfbot-container')) {
             const container = document.createElement('div');
-            container.id = 'chatbot-container';
+            container.id = 'xfbot-container';
             document.body.appendChild(container);
         }
-        if (!document.getElementById('chatbot-toggle-container')) {
+        if (!document.getElementById('xfbot-toggle-container')) {
             const toggleContainer = document.createElement('div');
-            toggleContainer.id = 'chatbot-toggle-container';
+            toggleContainer.id = 'xfbot-toggle-container';
             document.body.appendChild(toggleContainer);
         }
 
@@ -585,7 +498,7 @@ const xfBot = (function () {
             conversationHistory = [];
         }
         renderChatbotUI();
-        const chatBody = document.querySelector('.chatbot-body');
+        const chatBody = document.querySelector('.xfbot-body');
         if (conversationHistory.length > 0) {
             conversationHistory.forEach(msg => {
                 const role = msg.role === 'assistant' ? 'bot' : msg.role;
@@ -596,7 +509,6 @@ const xfBot = (function () {
         }
         renderToggleButton();
 
-        // MODIFICATION 3: The event listener remains, but its function is now smarter
         window.addEventListener('beforeunload', sendTranscriptOnUnload);
     }
     return { init: init };
