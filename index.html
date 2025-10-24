@@ -111,6 +111,9 @@
             <h2 class="font-bold mb-2">Customisation</h2>
             <pre style="color: #00478a; background-color: #fafafa; padding: 1rem; overflow-x:auto;"><code>
     &lt;script&gt;
+ 
+    var customLogo = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>';
+                
     var xfbotConfig = {
     apiEndpoint: 'https://xf.com.mt/xfai/bot/',
     userId: 'botdemo' // IMPORTANT: Update with your real USER ID,
@@ -129,6 +132,15 @@
     chatTextColorBot: '#333333',
 
     inputPlaceholder: 'Type your message...',
+ // ... other settings ...
+
+        // --- NEW SVG Customization ---
+        // This will override the default logo with the one defined above
+        svgLogo: customLogo, 
+        
+        // They could also override other icons, e.g.:
+        // svgSend: '<svg>...</svg>',
+        // svgLoader: '<div>Loading...</div>' // It doesn't even have to be an SVG!
     };
     &lt;/script&gt;
 </code></pre>
