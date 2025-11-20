@@ -1,174 +1,15 @@
 const xfBot = (function () {
     'use strict';
+
     const CHATBOT_CSS = `
-        #xfbot-toggle-button {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background-color: var(--toggle-bg, #fafafa);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            border: none;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: transform 0.3s ease, opacity 0.3s ease;
-            z-index: 1000;
-        }
-        
-        #xfbot-toggle-button.is-hidden {
-            transform: scale(0.8);
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        #xfbot-toggle-button:hover {
-            transform: scale(1.05);
-        }
-
-        #xfbot-toggle-button svg {
-            width: 30px;
-            height: 30px;
-            fill: var(--header-text-color, #ffffff);
-        }
-
-        /* --- Main Chat Widget --- */
-        .xfbot-widget {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            display: none; /* Initially hidden */
-            flex-direction: column;
-            width: 320px;
-            height: 480px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-            background-color: #f7f7f7;
-            transition: all 0.3s ease-in-out;
-            z-index: 999;
-        }
-
-        .xfbot-widget.is-open {
-            display: flex;
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 480px) {
-            .xfbot-widget {
-                width: 90vw;
-                height: 80vh;
-                bottom: 80px;
-                right: 5vw;
-                left: 5vw;
-            }
-
-            #xfbot-toggle-button {
-                bottom: 20px;
-                right: 20px;
-            }
-        }
-
-
-        /* Header */
-        .xfbot-header {
-            display: flex;
-            align-items: center;
-            background-color: var(--header-bg, #ff6600);
-            color: var(--header-text-color, #fff);
-            padding: 10px 15px;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-            user-select: none;
-        }
-
-        .xfbot-header .header-controls {
-            margin-left: auto;
-            display: flex;
-            gap: 15px;
-        }
-
-        .xfbot-header-logo {
-            padding: 5px;
-            background-color: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            width: 34px;
-            height: 34px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .xfbot-header-logo svg {
-            width: 24px;
-            height: 24px;
-            display: block;
-        }
-
-        .xfbot-header-title {
-            font-weight: 600;
-            flex-grow: 1;
-            margin-left: 10px;
-        }
-
-        .xfbot-header-btn {
-            background: none;
-            border: none;
-            color: var(--header-text-color, #fff);
-            cursor: pointer;
-            opacity: 0.8;
-            transition: opacity 0.2s;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .xfbot-header-btn:hover {
-            opacity: 1;
-        }
-
-        /* Chat Body */
-        .xfbot-body {
-            flex-grow: 1;
-            padding: 15px;
-            overflow-y: auto;
-            background-color: #e5e5e5;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            scrollbar-width: thin;
-            scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
-        }
-
-        .xfbot-body::-webkit-scrollbar { width: 8px; }
-        .xfbot-body::-webkit-scrollbar-thumb { background-color: rgba(0, 0, 0, 0.2); border-radius: 4px; }
-
-        .message { display: flex; max-width: 85%; }
-        .message-bubble { padding: 10px 15px; border-radius: 20px; line-height: 1.4; word-wrap: break-word; font-size: 14px; }
-        .message-bubble ul { padding-left: 20px; margin: 5px 0 0; }
-        .user-message { justify-content: flex-end; align-self: flex-end; margin-left: auto; }
-        .user-message .message-bubble { background-color: var(--user-bubble-bg, #333333); color: var(--user-text-color, #ffffff); border-bottom-right-radius: 5px; }
-        .bot-message { justify-content: flex-start; align-self: flex-start; }
-        .bot-message .message-bubble { background-color: var(--bot-bubble-bg, #ffffff); color: var(--bot-text-color, #333333); border-bottom-left-radius: 5px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); }
-        .bot-message.is-typing .message-bubble { display: flex; align-items: center; padding: 10px 15px; gap: 5px; }
-
-        /* SVG Loader Animation */
-        .bot-loader svg circle { animation: pulse 1.4s infinite ease-in-out; transform-origin: center center; fill: var(--bot-text-color, #333333); }
-        .bot-loader svg circle:nth-child(2) { animation-delay: 0.2s; }
-        .bot-loader svg circle:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes pulse { 0%, 80%, 100% { transform: scale(0); opacity: 0; } 40% { transform: scale(1); opacity: 1; } }
-
-        /* Footer */
-        .xfbot-footer { display: flex; padding: 8px;align-items: center; background-color: #fff; border-top: 1px solid #ddd; }
-        .xfbot-input { flex-grow: 1; padding: 10px 15px; border: 1px solid #ddd; border-radius: 20px; font-size: 14px; outline: none; margin-right: 6px; }
-        .xfbot-send-btn { background: none; border: none; cursor: pointer; padding: 0; width: 30px; height: 30px; display: flex; justify-content: center; align-items: center; color: var(--header-bg, #ff6600); }
-        .xfbot-send-btn svg { width: 100%; height: 100%; }
+   #xfbot-toggle-button{position:fixed;bottom:25px;right:25px;width:60px;height:60px;border-radius:50%;background-color:var(--toggle-bg,#fafafa);box-shadow:0 4px 15px rgba(0,0,0,.3);
+       border:none;cursor:pointer;display:flex;justify-content:center;align-items:center;transition:transform .3s ease,opacity .3s ease;
+       z-index:1000}#xfbot-toggle-button.is-hidden{transform:scale(.8);opacity:0;pointer-events:none}#xfbot-toggle-button:hover{transform:scale(1.05)}#xfbot-toggle-button svg{width:30px;
+           height:30px;fill:var(--header-text-color,#fff)}.xfbot-widget{position:fixed;bottom:25px;right:25px;display:none;flex-direction:column;width:320px;height:480px;
+               border-radius:10px;box-shadow:0 4px 15px rgba(0,0,0,.2);overflow:hidden;background-color:#f7f7f7;transition:all .3s ease-in-out;z-index:999}.xfbot-widget.is-open{display:flex;transform:translateY(0);opacity:1}
+               @media (max-width:480px){.xfbot-widget{width:90vw;height:80vh;bottom:80px;right:5vw;left:5vw}#xfbot-toggle-button{bottom:20px;right:20px}}.xfbot-header{display:flex;
+                   align-items:center;background-color:var(--header-bg,#ff6600);color:var(--header-text-color,#fff);padding:10px 15px;border-top-left-radius:10px;border-top-right-radius:10px;user-select:none}.xfbot-header .header-controls{margin-left:auto;display:flex;gap:15px}.xfbot-header-logo{padding:5px;background-color:rgba(255,255,255,.2);border-radius:50%;width:34px;height:34px;display:flex;justify-content:center;align-items:center}.xfbot-header-logo svg{width:24px;height:24px;display:block}.xfbot-header-title{font-weight:600;flex-grow:1;margin-left:10px}.xfbot-header-btn{background:none;border:none;color:var(--header-text-color,#fff);cursor:pointer;opacity:.8;transition:opacity .2s;padding:0;display:flex;align-items:center;justify-content:center}.xfbot-header-btn:hover{opacity:1}.xfbot-body{flex-grow:1;padding:15px;overflow-y:auto;background-color:#e5e5e5;display:flex;flex-direction:column;gap:10px;scrollbar-width:thin;scrollbar-color:rgba(0,0,0,.2) transparent}.xfbot-body::-webkit-scrollbar{width:8px}.xfbot-body::-webkit-scrollbar-thumb{background-color:rgba(0,0,0,.2);border-radius:4px}.message{display:flex;max-width:85%}.message-bubble{padding:10px 15px;border-radius:20px;line-height:1.4;word-wrap:break-word;overflow-wrap:break-word;font-size:14px;min-width:0}.message-bubble ul{padding-left:20px;margin:5px 0 0}.message-bubble pre{white-space:pre-wrap!important;overflow-wrap:break-word!important;background-color:#f4f4f4;padding:10px;border-radius:5px;margin-top:10px}.user-message{justify-content:flex-end;align-self:flex-end;margin-left:auto}.user-message .message-bubble{background-color:var(--user-bubble-bg,#333);color:var(--user-text-color,#fff);border-bottom-right-radius:5px}.bot-message{justify-content:flex-start;align-self:flex-start}.bot-message .message-bubble{background-color:var(--bot-bubble-bg,#fff);color:var(--bot-text-color,#333);border-bottom-left-radius:5px;box-shadow:0 1px 3px rgba(0,0,0,.1)}.bot-message.is-typing .message-bubble{display:flex;align-items:center;padding:10px 15px;gap:5px}.bot-loader svg circle{animation:pulse 1.4s infinite ease-in-out;transform-origin:center center;fill:var(--bot-text-color,#333)}.bot-loader svg circle:nth-child(2){animation-delay:.2s}.bot-loader svg circle:nth-child(3){animation-delay:.4s}@keyframes pulse{0%,80%,100%{transform:scale(0);opacity:0}40%{transform:scale(1);opacity:1}}.xfbot-footer{display:flex;padding:8px;align-items:center;background-color:#fff;border-top:1px solid #ddd}.xfbot-input{flex-grow:1;padding:10px 15px;border:1px solid #ddd;border-radius:20px;font-size:14px;outline:none;margin-right:6px}.xfbot-send-btn{background:none;border:none;cursor:pointer;padding:0;width:30px;height:30px;display:flex;
+       justify-content:center;align-items:center;color:var(--header-bg,#ff6600)}.xfbot-send-btn svg{width:100%;height:100%}
     `;
 
     function addChatbotStyles() {
@@ -248,12 +89,14 @@ const xfBot = (function () {
 
     function generateUUID() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8); return v.toString(16);
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
         });
     }
 
     function saveState() {
-        localStorage.setItem('xfbotSessionId', sessionId); localStorage.setItem('xfbotHistory', JSON.stringify(conversationHistory));
+        localStorage.setItem('xfbotSessionId', sessionId);
+        localStorage.setItem('xfbotHistory', JSON.stringify(conversationHistory));
     }
 
     function loadState() {
@@ -272,9 +115,11 @@ const xfBot = (function () {
 
     async function clearChat() {
         await sendTranscriptOnClick();
-        localStorage.removeItem('xfbotHistory'); conversationHistory = [];
+        localStorage.removeItem('xfbotHistory');
+        conversationHistory = [];
         const chatBody = document.querySelector('.xfbot-body');
-        chatBody.innerHTML = ''; appendMessage(config.initialMessage, 'bot');
+        chatBody.innerHTML = '';
+        appendMessage(config.initialMessage, 'bot');
     }
 
     async function sendMessageToAPI(message) {
@@ -442,7 +287,7 @@ const xfBot = (function () {
 
     function init() {
         const defaultConfig = {
-            apiEndpoint: 'https://xf.com.mt/xfai/bot/',
+            apiEndpoint: 'https://xf.com.mt/repliii/bot/',
             userId: 'botdemo',
             headerTitle: 'xfBot',
             headerBgColor: '#ffbf00',
