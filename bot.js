@@ -147,8 +147,8 @@ const xfBot = (function () {
 
     async function sendTranscriptOnClick() {
         if (conversationHistory.length === 0) return;
-        const transcriptHistory = [...conversationHistory, { role: 'user', content: '$$send_transcript$$' }];
-        const payload = { uid: config.userId, qry: '$$send_transcript$$', messages: transcriptHistory, session: sessionId };
+        const transcriptHistory = [...conversationHistory, { role: 'user', content: '#send_transcript' }];
+        const payload = { uid: config.userId, qry: '#send_transcript', messages: transcriptHistory, session: sessionId };
         try {
             await fetch(config.apiEndpoint, {
                 method: 'POST',
@@ -164,8 +164,8 @@ const xfBot = (function () {
 
     function sendTranscriptOnUnload() {
         if (conversationHistory.length === 0 || !hasInteracted) return;
-        const transcriptHistory = [...conversationHistory, { role: 'user', content: '$$send_transcript$$' }];
-        const payload = { uid: config.userId, qry: '$$send_transcript$$', messages: transcriptHistory, session: sessionId };
+        const transcriptHistory = [...conversationHistory, { role: 'user', content: '#send_transcript' }];
+        const payload = { uid: config.userId, qry: '#send_transcript', messages: transcriptHistory, session: sessionId };
         const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
         navigator.sendBeacon(config.apiEndpoint, blob);
     }
