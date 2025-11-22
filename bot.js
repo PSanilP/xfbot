@@ -113,8 +113,11 @@ const xfBot = (function () {
         return null;
     }
 
-    async function clearChat() {
-        await sendTranscriptOnClick();
+    function clearChat() {
+        // Trigger the transcript email in the background without waiting
+        sendTranscriptOnClick();
+
+        // Immediately clear the UI and local storage
         localStorage.removeItem('xfbotHistory');
         conversationHistory = [];
         const chatBody = document.querySelector('.xfbot-body');
