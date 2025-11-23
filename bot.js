@@ -164,10 +164,18 @@ const xfBot = (function () {
 
     function sendTranscriptOnUnload() {
         if (conversationHistory.length === 0 || !hasInteracted) return;
-        const transcriptHistory = [...conversationHistory, { role: 'user', content: '#send_transcript' }];
-        const payload = { uid: config.userId, qry: '#send_transcript', messages: transcriptHistory, session: sessionId };
-        const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
-        navigator.sendBeacon(config.apiEndpoint, blob);
+
+        const transcriptHistory = [...conversationHistory, { role: 'user', content: '$$send_transcript$$' }];
+        const payload = { uid: config.userId, qry: '$$send_transcript$$', messages: transcriptHistory, session: sessionId };
+
+        fetch(config.apiEndpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+            keepalive: true
+        }).catch(error => {
+            console.error('Transcript unload sync failed:', error);
+        });
     }
 
     function appendMessage(text, sender, doNotScroll = false) {
@@ -358,6 +366,11 @@ const xfBot = (function () {
         renderToggleButton();
 
         window.addEventListener('beforeunload', sendTranscriptOnUnload);
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden') {
+                sendTranscriptOnUnload();
+            }
+        });
     }
     return { init: init };
 })();
