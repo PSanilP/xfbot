@@ -1,5 +1,6 @@
 const xfBot = (function () {
     'use strict';
+    const version = '1.12.14';
 
     const CHATBOT_CSS = `
    #xfbot-toggle-button{position:fixed;bottom:25px;right:25px;width:60px;height:60px;border-radius:50%;background-color:var(--toggle-bg,#fafafa);box-shadow:0 4px 15px rgba(0,0,0,.3);
@@ -26,7 +27,7 @@ const xfBot = (function () {
     let sessionId = null;
     let hasInteracted = false;
 
-    function simpleRenderer(text) {
+    function divRenderer(text) {
         let safeText = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
         safeText = safeText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
         const listItems = [];
@@ -114,7 +115,7 @@ const xfBot = (function () {
     }
 
     function clearChat() {
-        // Trigger the transcript email in the background without waiting
+        // Trigger the transcript email in the background
         sendTranscriptOnClick();
 
         // Immediately clear the UI and local storage
@@ -185,7 +186,7 @@ const xfBot = (function () {
         messageDiv.classList.add('message', `${sender}-message`);
         const bubbleDiv = document.createElement('div');
         bubbleDiv.classList.add('message-bubble');
-        bubbleDiv.innerHTML = simpleRenderer(text);
+        bubbleDiv.innerHTML = divRenderer(text);
         messageDiv.appendChild(bubbleDiv);
         chatBody.appendChild(messageDiv);
         if (!doNotScroll) { chatBody.scrollTop = chatBody.scrollHeight; }
